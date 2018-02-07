@@ -6,7 +6,7 @@ const connectionDetails = require("./connectionDetails");
 /*
 	Starting point
 */
-(function() {
+(function () {
 	displayAllItems();
 })();
 
@@ -90,12 +90,7 @@ function promptUserToBuy(results) {
 				}
 			}
 		]).then((answers) => {
-			if(!quantityAvailable(results, answers.itemID, answers.itemQty)) {
-				console.log("The store currently does not have enough stock to fulfill your order for item ID " + answers.itemID);
-			} else {
-
-				processOrder(answers.itemID, answers.itemQty);
-			}
+			quantityAvailable(answers.itemID, answers.itemQty);
 		});
 }
 
@@ -116,18 +111,35 @@ function doesItemIdExist(results, itemID) {
 /*
 	Checks if enough stock is available for order
 */
-function quantityAvailable(results, itemID, quantity) {
-	for(let i=0; i<results[0].length; i++) {
-		if(results[0][i].item_id === parseInt(itemID)) {
-			if(parseInt(quantity) > results[0][i].stock_quantity) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-	}
+function quantityAvailable(itemID, quantityWanted) {
+	const sqlQuery = "SELECT " +
+						" (CASE " +
+						" WHEN stock_quantity >= ? THEN 1 " +
+						" ELSE 0 " +
+	 					" END) available_stock " +
+						" FROM products " +
+						" WHERE item_id = ?";
 
-	return false;
+	mysql.createConnection(connectionDetails())
+		.then((conn) => {
+			const results = conn.query(sqlQuery, [quantityWanted, itemID]);
+
+			conn.end();
+
+			return results;
+		}).then((results) => {
+			if(results[0][0].available_stock == 0) {
+				console.log("The store currently does not have enough stock to fulfill your order for item ID " + itemID);
+			} else if(results[0][0].available_stock == 1) {
+				processOrder(itemID, quantityWanted);
+			} else {
+				throw ("Invalid result encountered during inventory check");
+			}
+		}).catch((error) => {
+			if(error) {
+				console.error(error);
+			}
+		});
 }
 
 /*
