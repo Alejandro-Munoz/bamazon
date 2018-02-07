@@ -1,1 +1,1 @@
-// Empty for now
+console.log("Run each application individually");
