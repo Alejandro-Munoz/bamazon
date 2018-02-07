@@ -18,3 +18,11 @@ exports.displayData = function(results) {
 
 	console.log(dataTable.toString());
 }
+
+exports.validateItemIdInput = function(input, resultsTable) {
+	if(isNaN(input) || !doesItemIdExist(resultsTable, input)) {
+		return "That item ID does not exist, please choose a valid ID.";
+	} 
+
+	return true;
+}
