@@ -51,7 +51,7 @@ function promptUser() {
 						console.error(error);
 					}
 				});
-		}
+		} // End displayAllProducts
 
 		function displayData(results) {
 
@@ -72,7 +72,30 @@ function promptUser() {
 
 			console.log(dataTable.toString());
 		} // End displayData
+
+		function displayLowInventory() {
+			const sqlQuery = "SELECT * FROM products " +
+										" WHERE stock_quantity < 5";
+
+			mysql.createConnection(connectionDetails())
+				.then((conn) => {
+					// Execute query
+					const results = conn.query(sqlQuery);
+
+					conn.end();
+
+					return results;
+				})
+				.then((results) => {
+					displayData(results);
+				}).catch(function(error) {
+					if(error) {
+						console.error(error);
+					}
+				});
+			} // End displayLowInventory
 		
+
 }
 
 module.exports = bamazonManager;
