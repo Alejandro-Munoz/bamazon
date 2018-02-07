@@ -4,6 +4,13 @@ const inquirer  = require("inquirer");
 const connectionDetails = require("./connectionDetails");
 
 /*
+	Starting point
+*/
+(function() {
+	displayAllItems();
+})();
+
+/*
 	Queries the products table and then will prompt the user whether they would like to make a purchase
 */
 function displayAllItems() {
@@ -204,5 +211,3 @@ function updateStockQuantity(itemID, quantityPurchased) {
 			}
 		});
 }
-
-module.exports = displayAllItems;

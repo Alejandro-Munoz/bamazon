@@ -1,3 +1,1 @@
-const bamazonCustomer = require("./bamazonCustomer");
-
-bamazonCustomer();
+// Empty for now
