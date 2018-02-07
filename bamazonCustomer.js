@@ -24,7 +24,7 @@ function displayAllItems() {
 			promptUserToBuy(results);
 		}).catch(function(error) {
 			if(error) {
-				console.log(error);
+				console.error(error);
 			}
 		});
 }
@@ -75,8 +75,8 @@ function promptUserToBuy(results) {
 				name: "itemQty",
 				message: "How many of that item would you like to purchase?",
 				validate: function(input) {
-					if(isNaN(input)) {
-						return "That is an invalid amount.  Please enter a valid number.";
+					if(isNaN(input) || input <= 0) {
+						return "That is an invalid amount.  Please enter a valid quantity value.";
 					}
 
 					return true;
@@ -84,12 +84,11 @@ function promptUserToBuy(results) {
 			}
 		]).then((answers) => {
 			if(!quantityAvailable(results, answers.itemID, answers.itemQty)) {
-				console.log("The stored currently does not have enough stock to fulfill your order.");
+				console.log("The store currently does not have enough stock to fulfill your order for item ID " + answers.itemID);
+			} else {
 
-				return;
+				processOrder(answers.itemID, answers.itemQty);
 			}
-
-			processOrder(answers.itemID, answers.itemQty);
 		});
 }
 
@@ -111,8 +110,6 @@ function doesItemIdExist(results, itemID) {
 	Checks if enough stock is available for order
 */
 function quantityAvailable(results, itemID, quantity) {
-	console.log(itemID, quantity);
-
 	for(let i=0; i<results[0].length; i++) {
 		if(results[0][i].item_id === parseInt(itemID)) {
 			if(parseInt(quantity) > results[0][i].stock_quantity) {
@@ -126,10 +123,13 @@ function quantityAvailable(results, itemID, quantity) {
 	return false;
 }
 
-function getItemDetails(itemID) {
+/*
+	Will print the order to the terminal
+*/
+function finalizeOrder(itemID, quantityPurchased) {
 	const sqlQuery = "SELECT * FROM products WHERE ?";
 
-	return mysql.createConnection(connectionDetails())
+	mysql.createConnection(connectionDetails())
 		.then((conn) => {
 			// Execute query
 			const results = conn.query(sqlQuery, [{item_id: itemID}]);
@@ -138,56 +138,69 @@ function getItemDetails(itemID) {
 
 			return results;
 		}).then((results) => {
-			return results;
+			printOrder(results, itemID, quantityPurchased);
 		}).catch((error) => {
 			if(error) {
-				console.log(error);
+				console.error(error);
 			}
 		});
 }
 
+/*
+	Executes logic to process an order which involves updating stock in the database and then
+	printing the order details
+*/
+function processOrder(itemID, quantityPurchased) {
+	// 1. Update stock quantity
+	// 2. The finalizeOrder function will be called once the stock quantity has been successfully updated.
+	updateStockQuantity(itemID, quantityPurchased);
+}
 
-
-function processOrder(itemID, quantity) {
+/*
+	Prints the order details to the terminal
+*/
+function printOrder(itemDetails, itemID, quantityPurchased) {
 	// Print order
 	let orderTable = new table({
 		head: ["Item Id", "Product Name", "Price", "Qty", "Order Total"],
-		colWidths: [10, 20, 10, 10, 10]
+		colWidths: [10, 20, 10, 10, 15]
 	});
 
-	const itemDetails = getItemDetails(itemID);
-	
-	itemDetails.then((itemDetails) => {
-		console.log(getItemDetails);
-		/*
-		const row = [itemDetails[0][0].item_id, itemDetails[0][0].product_name, getItemDetails[0][0].price, quantity, parseFloat(getItemDetails[0][0].price) * quantity];
+	const row = [itemID, 
+			itemDetails[0][0].product_name, 
+			itemDetails[0][0].price, 
+			quantityPurchased, 
+			(parseFloat(itemDetails[0][0].price) * quantityPurchased).toFixed(2)
+		]
 
-		orderTable.push(row);
+	orderTable.push(row);
 
-		console.log(orderTable.toString());
-
-			// Update stock quantity
-			updateQuantity(itemID, quantity);
-		*/
-	}).catch((error) => {
-		if(error) {
-			console.log(error);
-		}
-	});
+	console.log(orderTable.toString());
 }
 
-function updateQuantity(itemID, quantity) {
-	const sqlQuery = "UPDATE products SET stock_quantity = stock_quantity - " + parseInt(quantity) + " WHERE ?";
+/*
+	Updates the stock quantity in the database
+*/
+function updateStockQuantity(itemID, quantityPurchased) {
+	const sqlQuery = "UPDATE products SET stock_quantity = stock_quantity - " + parseInt(quantityPurchased) + " WHERE ?";
 
 	mysql.createConnection(connectionDetails())
 		.then((conn) => {
 			// Execute query
-			conn.query(sqlQuery, [{item_id: itemID}]);
+			const result = conn.query(sqlQuery, [{item_id: itemID}]);
 
 			conn.end();
+
+			return result;
+		}).then((results) => {
+			if(results[0].affectedRows >= 1) {
+				finalizeOrder(itemID, quantityPurchased);
+			} else {
+				throw("Error encountered while attempting to update stock quantity.  The order in progress has been cancelled.");
+			}
 		}).catch(function(error) {
 			if(error) {
-				console.log(error);
+				console.error(error);
 			}
 		});
 }
