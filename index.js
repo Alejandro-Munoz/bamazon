@@ -7,7 +7,7 @@ inquirer
 		{
 			type: "list",
 			name: "viewSelection",
-			message: "Select from the following choices",
+			message: "Select a view",
 			choices: ["Customer", "Manager", "Supervisor"]
 		}
 	]).then((answers) => {
@@ -22,6 +22,6 @@ inquirer
 				console.log("Coming Soon");
 				break;
 			default:
-				console.log("Unhandled selection encountered");
+				console.error("Encountered unhandled selection: " + answers.viewSelection);
 		}
 	});
