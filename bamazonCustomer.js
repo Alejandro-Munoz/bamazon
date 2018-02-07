@@ -21,7 +21,7 @@ function displayAllItems() {
 			bamazonUtils.displayData(results);
 
 			promptUserToBuy(results);
-		}).catch(function(error) {
+		}).catch((error) => {
 			if(error) {
 				console.error(error);
 			}
@@ -171,7 +171,7 @@ function displayAllItems() {
 					} else {
 						throw("Error encountered while attempting to update stock quantity.  The order in progress has been cancelled.");
 					}
-				}).catch(function(error) {
+				}).catch((error) => {
 					if(error) {
 						console.error(error);
 					}
