@@ -1,7 +1,6 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql2/promise");
-const table = require("cli-table");
-const connectionDetails = require("./connectionDetails");
+const databaseQueries = require("./databaseQueries");
+const bamazonUtils = require("./bamazonUtils");
 
 function bamazonManager() {
 	promptUser();
@@ -33,19 +32,9 @@ function promptUser() {
 		});
 
 		function displayAllProducts() {
-			const sqlQuery = "SELECT * FROM products ORDER BY item_id";
-
-			mysql.createConnection(connectionDetails())
-				.then((conn) => {
-					// Execute query
-					const results = conn.query(sqlQuery);
-
-					conn.end();
-
-					return results;
-				})
+			databaseQueries.getAllProducts()
 				.then((results) => {
-					displayData(results);
+					bamazonUtils.displayData(results);
 				}).catch(function(error) {
 					if(error) {
 						console.error(error);
@@ -53,6 +42,7 @@ function promptUser() {
 				});
 		} // End displayAllProducts
 
+		/*
 		function displayData(results) {
 
 			let dataTable = new table({
@@ -72,6 +62,7 @@ function promptUser() {
 
 			console.log(dataTable.toString());
 		} // End displayData
+		*/
 
 		function displayLowInventory() {
 			const sqlQuery = "SELECT * FROM products " +
