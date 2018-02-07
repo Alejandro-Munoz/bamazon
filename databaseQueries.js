@@ -92,3 +92,26 @@ exports.addToInventory = function(itemId, amount) {
 			}
 	);
 }
+
+exports.addNewItem = function(productName, deptName, price, stockQty) {
+	return new Promise(
+			function(resolve, reject) {
+				const sqlQuery = "INSERT INTO products(product_name, department_name, price, stock_quantity)" +
+							" VALUES(?,?,?,?)";
+
+				mysql.createConnection(connectionDetails())
+					.then((conn) => {
+						// Execute query
+						const results = conn.query(sqlQuery, [productName, deptName, price, stockQty]);
+
+						conn.end();
+
+						resolve(results);
+					}).catch(function(error) {
+						if(error) {
+							reject(error);
+						}
+					});
+			}
+	);
+}

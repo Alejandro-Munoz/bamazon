@@ -24,9 +24,10 @@ function promptUser() {
 					displayLowInventory();
 					break;
 				case "Add to Inventory":
-					addInventory()
+					addInventory();
 					break;
 				case "Add New Product":
+					addNewItem();
 					break;
 				default:
 					console.error("Encountered unhandled selection: " + answers.userAction);
@@ -76,7 +77,7 @@ function promptUser() {
 					message: "How much quantity should be added?",
 					validate: function(input) {
 						if(isNaN(input) || input <= 0) {
-							return "That is an amount.  Please enter a value > 0,";
+							return "That is an invalid quantity.  Please enter a value > 0,";
 						}
 						
 						return true;
@@ -102,6 +103,55 @@ function promptUser() {
 								console.error(error);
 							}
 						});
+				});
+		}
+
+		function addNewItem() {
+			inquirer
+				.prompt([
+					{
+						type: "input",
+						name: "productName",
+						message: "Product name?"
+					},
+					{
+						type: "input",
+						name: "deptName",
+						message: "Department name?"
+					},
+					{
+						type: "input",
+						name: "price",
+						message: "Price?",
+						validate: function(input) {
+							if(isNaN(input) || input < 0) {
+								return "That is an invalid price.  Please enter a valid price value.";
+							}
+
+							return true;
+						}
+					},
+					{
+						type: "input",
+						name: "quantity",
+						message: "Stock quantity (whole numbers only)?",
+						validate: function(input) {
+							if(isNaN(input) || input < 0 || Number.isInteger(parseInt(input)) === false) {
+								return "That is an invalid stock quantity.  Please enter a valid quantity value.";
+							}
+
+							return true;
+						}
+					}
+					]).then((answers) => {
+						databaseQueries.addNewItem(answers.productName, answers.deptName, answers.price, answers.quantity)
+							.then((results) => {
+								console.log("Item successfully added.");
+							}).catch((error) => {
+								if(error) {
+									console.error(error);
+								}
+							});
 				});
 		}
 }
