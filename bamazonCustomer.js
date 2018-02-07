@@ -58,14 +58,14 @@ function displayAllItems() {
 						}
 					}
 				]).then((answers) => {
-					quantityAvailable(answers.itemID, answers.itemQty);
+					enoughQuantityAvailable(answers.itemID, answers.itemQty);
 				});
 		} // End promptUserToBuy
 
 		/*
 			Checks if enough stock is available for order
 		*/
-		function quantityAvailable(itemID, quantityWanted) {
+		function enoughQuantityAvailable(itemID, quantityWanted) {
 			const sqlQuery = "SELECT " +
 								" (CASE " +
 								" WHEN stock_quantity >= ? THEN 1 " +
@@ -94,7 +94,7 @@ function displayAllItems() {
 						console.error(error);
 					}
 				});
-		} // End quantityAvailable
+		} // End enoughQuantityAvailable
 
 		/*
 			Will print the order to the terminal
