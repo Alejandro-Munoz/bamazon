@@ -1,8 +1,8 @@
 const inquirer = require("inquirer");
 
-(function() {
+function bamazonManager() {
 	promptUser();
-})();
+}
 
 function promptUser() {
 	inquirer
@@ -17,3 +17,5 @@ function promptUser() {
 			console.log(answers.userAction);
 		});
 }
+
+module.exports = bamazonManager;

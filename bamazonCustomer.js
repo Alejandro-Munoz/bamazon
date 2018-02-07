@@ -6,9 +6,9 @@ const connectionDetails = require("./connectionDetails");
 /*
 	Starting point
 */
-(function () {
+function bamazonCustomer() {
 	displayAllItems();
-})();
+}
 
 /*
 	Queries the products table and then will prompt the user whether they would like to make a purchase
@@ -208,7 +208,7 @@ function displayAllItems() {
 					}
 				});
 		} // End updateStockQuantity
-		
+
 } // End displayAllItems
 
 /*
@@ -224,3 +224,5 @@ function doesItemIdExist(results, itemID) {
 
 	return false;
 }
+
+module.exports = bamazonCustomer;
