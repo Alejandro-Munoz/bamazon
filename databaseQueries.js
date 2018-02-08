@@ -5,7 +5,7 @@ const connectionDetails = require("./connectionDetails");
 exports.getAllProducts = function() {
 	return new Promise(
 		function(resolve, reject) {
-			const sqlQuery = "SELECT * FROM products ORDER BY item_id";
+			const sqlQuery = "SELECT item_id, product_name, department_name, price FROM products ORDER BY item_id";
 
 			mysql.createConnection(connectionDetails())
 				.then((conn) => {
