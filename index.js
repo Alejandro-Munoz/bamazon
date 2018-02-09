@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const bamazonCustomer = require("./bamazonCustomer");
 const bamazonManager = require("./bamazonManager");
+const bamazonSupervisor = require("./bamazonSupervisor");
 
 inquirer
 	.prompt([
@@ -19,7 +20,7 @@ inquirer
 				bamazonManager();
 				break;
 			case "Supervisor":
-				console.log("Coming Soon");
+				bamazonSupervisor();
 				break;
 			default:
 				console.error("Encountered unhandled selection: " + answers.viewSelection);

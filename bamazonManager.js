@@ -37,6 +37,8 @@ function promptUser() {
 		function displayAllProducts() {
 			databaseQueries.getAllProducts()
 				.then((results) => {
+					console.log("\n---- Current List of Items on Sale ----");
+
 					bamazonUtils.displayData(results);
 				}).catch((error) => {
 					if(error) {
@@ -48,6 +50,8 @@ function promptUser() {
 		function displayLowInventory() {
 			databaseQueries.getLowInventory(5)
 				.then((results) => {
+					console.log("\n---- Current List of Items With Low Inventory ----");
+
 					bamazonUtils.displayData(results);
 				}).catch((error) => {
 					if(error) {
