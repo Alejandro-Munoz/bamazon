@@ -1,7 +1,5 @@
-const mysql = require("mysql2/promise");
 const table = require("cli-table");
 const inquirer  = require("inquirer");
-const connectionDetails = require("./connectionDetails");
 const databaseQueries = require("./databaseQueries");
 const bamazonUtils = require("./bamazonUtils");
 
@@ -18,6 +16,8 @@ function bamazonCustomer() {
 function displayAllItems() {
 	databaseQueries.getAllProducts()
 		.then((results) => {
+			console.log("\n---- Current List of Items on Sale ----");
+
 			bamazonUtils.displayData(results);
 
 			promptUserToBuy(results);
@@ -66,22 +66,8 @@ function displayAllItems() {
 			Checks if enough stock is available for order
 		*/
 		function enoughQuantityAvailable(itemID, quantityWanted) {
-			const sqlQuery = "SELECT " +
-								" (CASE " +
-								" WHEN stock_quantity >= ? THEN 1 " +
-								" ELSE 0 " +
-			 					" END) available_stock " +
-								" FROM products " +
-								" WHERE item_id = ?";
-
-			mysql.createConnection(connectionDetails())
-				.then((conn) => {
-					const results = conn.query(sqlQuery, [quantityWanted, itemID]);
-
-					conn.end();
-
-					return results;
-				}).then((results) => {
+			databaseQueries.enoughQuantityAvailable(itemID, quantityWanted)
+				.then((results) => {
 					if(results[0][0].available_stock == 0) {
 						console.log("The store currently does not have enough stock to fulfill your order for item ID " + itemID);
 					} else if(results[0][0].available_stock == 1) {
@@ -100,18 +86,23 @@ function displayAllItems() {
 			Will print the order to the terminal
 		*/
 		function finalizeOrder(itemID, quantityPurchased) {
-			const sqlQuery = "SELECT * FROM products WHERE ?";
-
-			mysql.createConnection(connectionDetails())
-				.then((conn) => {
-					// Execute query
-					const results = conn.query(sqlQuery, [{item_id: itemID}]);
-
-					conn.end();
-
-					return results;
-				}).then((results) => {
+			databaseQueries.getData(itemID)
+				.then((results) => {
 					printOrder(results, itemID, quantityPurchased);
+
+					return true;
+				}).then((results) => { 
+					if(results) {
+						// Now update the product sales
+						databaseQueries.updateProductSales(itemID, quantityPurchased)
+							.then(() => {
+
+							}).catch((error) => {
+								if(error) {
+									console.log(error);
+								}
+							});
+					}
 				}).catch((error) => {
 					if(error) {
 						console.error(error);
@@ -155,17 +146,8 @@ function displayAllItems() {
 			Updates the stock quantity in the database
 		*/
 		function updateStockQuantity(itemID, quantityPurchased) {
-			const sqlQuery = "UPDATE products SET stock_quantity = stock_quantity - " + parseInt(quantityPurchased) + " WHERE ?";
-
-			mysql.createConnection(connectionDetails())
-				.then((conn) => {
-					// Execute query
-					const result = conn.query(sqlQuery, [{item_id: itemID}]);
-
-					conn.end();
-
-					return result;
-				}).then((results) => {
+			databaseQueries.updateStockQuantity(itemID, quantityPurchased)
+				.then((results) => {
 					if(results[0].affectedRows >= 1) {
 						finalizeOrder(itemID, quantityPurchased);
 					} else {

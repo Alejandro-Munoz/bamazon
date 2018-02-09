@@ -15,7 +15,7 @@ exports.getAllProducts = function() {
 					conn.end();
 
 					resolve(results);
-				}).catch(function(error) {
+				}).catch((error) => {
 					if(error) {
 						reject(error);
 					}
@@ -38,7 +38,7 @@ exports.getLowInventory = function(threshold) {
 						conn.end();
 
 						resolve(results);
-					}).catch(function(error) {
+					}).catch((error) =>{
 						if(error) {
 							reject(error);
 						}
@@ -61,7 +61,7 @@ exports.getData = function(itemId) {
 						conn.end();
 
 						resolve(results);
-					}).catch(function(error) {
+					}).catch((error) => {
 						if(error) {
 							reject(error);
 						}
@@ -84,7 +84,7 @@ exports.addToInventory = function(itemId, amount) {
 						conn.end();
 
 						resolve(results);
-					}).catch(function(error) {
+					}).catch((error) => {
 						if(error) {
 							reject(error);
 						}
@@ -107,11 +107,82 @@ exports.addNewItem = function(productName, deptName, price, stockQty) {
 						conn.end();
 
 						resolve(results);
-					}).catch(function(error) {
+					}).catch((error) => {
 						if(error) {
 							reject(error);
 						}
 					});
 			}
 	);
+}
+
+exports.updateProductSales = function(itemId, quantityPurchased){
+	return new Promise(
+		function(resolve, reject) {
+			const sqlQuery = "UPDATE products SET product_sales = product_sales + (price * ?)" +
+							" WHERE item_id = ?";
+
+			mysql.createConnection(connectionDetails())
+				.then((conn) => {
+					const results = conn.query(sqlQuery, [quantityPurchased, itemId]);
+
+					conn.end();
+
+					resolve(results);
+				}).catch((error) => {
+					if(error) {
+						reject(error);
+					}
+				});
+		}
+	);
+}
+
+exports.enoughQuantityAvailable = function(itemId, quantityWanted) {
+	return new Promise(
+		function(resolve, reject) {
+			const sqlQuery = "SELECT " +
+								" (CASE " +
+								" WHEN stock_quantity >= ? THEN 1 " +
+								" ELSE 0 " +
+			 					" END) available_stock " +
+								" FROM products " +
+								" WHERE item_id = ?";
+
+			mysql.createConnection(connectionDetails())
+				.then((conn) => {
+					const results = conn.query(sqlQuery, [quantityWanted, itemId]);
+
+					conn.end();
+
+					resolve(results);
+			}).catch((error) => {
+				if(error) {
+					reject(error);
+				}
+			});
+		}
+	);
+}
+
+exports.updateStockQuantity = function(itemID, quantityPurchased) {
+	return new Promise(
+		function(resolve, reject) {
+			const sqlQuery = "UPDATE products SET stock_quantity = stock_quantity - " + parseInt(quantityPurchased) + " WHERE ?";
+
+			mysql.createConnection(connectionDetails())
+				.then((conn) => {
+					// Execute query
+					const result = conn.query(sqlQuery, [{item_id: itemID}]);
+
+					conn.end();
+
+					resolve(result);
+			}).catch((error) => {
+				if(error) {
+					reject(error);
+				}
+			});
+		}
+	)
 }
