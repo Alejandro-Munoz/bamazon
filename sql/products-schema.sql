@@ -1,4 +1,4 @@
--- Create syntax for 'products'
+DROP TABLE IF EXISTS `products`;
 
 CREATE TABLE `products` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -6,5 +6,6 @@ CREATE TABLE `products` (
   `department_name` varchar(50) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `stock_quantity` int(11) NOT NULL,
+  `product_sales` decimal(10,2) NOT NULL,
   PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

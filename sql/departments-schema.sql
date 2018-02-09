@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `departments`;
+
 CREATE TABLE `departments` (
   `department_id` int(11) NOT NULL AUTO_INCREMENT,
   `department_name` varchar(255) NOT NULL,

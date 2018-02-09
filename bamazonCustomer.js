@@ -72,10 +72,15 @@ function displayAllItems() {
 			databaseQueries.enoughQuantityAvailable(itemID, quantityWanted)
 				.then((results) => {
 					if(results[0][0].available_stock == 0) {
+
 						console.log("The store currently does not have enough stock to fulfill your order for item ID " + itemID);
+
 					} else if(results[0][0].available_stock == 1) {
+
 						processOrder(itemID, quantityWanted);
+					
 					} else {
+						
 						throw ("Invalid result encountered during inventory check");
 					}
 				}).catch((error) => {
@@ -152,8 +157,11 @@ function displayAllItems() {
 			databaseQueries.updateStockQuantity(itemID, quantityPurchased)
 				.then((results) => {
 					if(results[0].affectedRows >= 1) {
+
 						finalizeOrder(itemID, quantityPurchased);
+					
 					} else {
+						
 						throw("Error encountered while attempting to update stock quantity.  The order in progress has been cancelled.");
 					}
 				}).catch((error) => {
