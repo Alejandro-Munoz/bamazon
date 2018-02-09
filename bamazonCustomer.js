@@ -18,7 +18,10 @@ function displayAllItems() {
 		.then((results) => {
 			console.log("\n---- Current List of Items on Sale ----");
 
-			bamazonUtils.displayData(results);
+			const colNames = ["Item Id", "Product Name", "Department Name", "Price"];
+			const colWidths = [10, 20, 20, 10];
+			
+			bamazonUtils.displayData(results, colNames, colWidths);
 
 			promptUserToBuy(results);
 		}).catch((error) => {

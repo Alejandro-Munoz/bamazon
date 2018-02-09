@@ -1,5 +1,6 @@
 const table = require("cli-table");
 
+/*
 exports.displayData = function(results) {
 	let dataTable = new table({
 		head: ["Item Id", "Product Name", "Department Name", "Price"],
@@ -17,6 +18,7 @@ exports.displayData = function(results) {
 
 	console.log(dataTable.toString());
 }
+*/
 
 exports.validateItemIdInput = function(input, resultsTable) {
 	if(isNaN(input) || !doesItemIdExist(resultsTable, input)) {
@@ -26,7 +28,7 @@ exports.validateItemIdInput = function(input, resultsTable) {
 	return true;
 }
 
-exports.displayDataV2 = function(results, displayColNames, colWidths) {
+exports.displayData = function(results, displayColNames, colWidths) {
 	let dataTable = new table({
 		head: displayColNames,
 		colWidths: colWidths
