@@ -25,3 +25,22 @@ exports.validateItemIdInput = function(input, resultsTable) {
 
 	return true;
 }
+
+exports.displayDataV2 = function(results, displayColNames, colWidths) {
+	let dataTable = new table({
+		head: displayColNames,
+		colWidths: colWidths
+	}); 
+
+	for(let i=0; i<results[0].length; i++) {
+		const row = [];
+
+		for(let j=0; j<results[1].length; j++) {
+			row.push(results[0][i][results[1][j].name]);
+		}
+
+		dataTable.push(row);
+	}
+
+	console.log(dataTable.toString());
+}
