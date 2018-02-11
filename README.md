@@ -4,6 +4,7 @@
 A Node.js based terminal store front utilizing a MySQL database.
 
 The application provides 3 views:
+
 	* Customer
 	* Manager
 	* Supervisor
