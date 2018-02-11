@@ -29,6 +29,10 @@ exports.validateItemIdInput = function(input, resultsTable) {
 }
 
 exports.displayData = function(results, displayColNames, colWidths) {
+	if(displayColNames.length != colWidths.length) {
+		throw error("The number of provided columns does not match the number of provided width values.");
+	}
+
 	let dataTable = new table({
 		head: displayColNames,
 		colWidths: colWidths

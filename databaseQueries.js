@@ -2,11 +2,23 @@ const mysql = require("mysql2/promise");
 const connectionDetails = require("./connectionDetails");
 
 
-exports.getAllProducts = function() {
+exports.getProducts = function(viewType) {
 	return new Promise(
 		function(resolve, reject) {
-			const sqlQuery = `SELECT item_id, product_name, department_name, price 
+			let sqlQuery = "";
+
+			switch(viewType) {
+		 		case "customer":
+		 			sqlQuery = `SELECT item_id, product_name, department_name, price 
 													FROM products ORDER BY item_id`;
+					break;
+				case "manager":
+					sqlQuery = `SELECT item_id, product_name, department_name, price, stock_quantity 
+													FROM products ORDER BY item_id`;
+					break;
+				default:
+					throw("Invalid viewType encountered " + viewType);
+			}
 
 			mysql.createConnection(connectionDetails())
 				.then((conn) => {
@@ -28,7 +40,8 @@ exports.getAllProducts = function() {
 exports.getLowInventory = function(threshold) {
 	return new Promise(
 			function(resolve, reject) {
-				const sqlQuery = `SELECT * FROM products
+				const sqlQuery = `SELECT item_id, product_name, department_name, price, stock_quantity  
+														FROM products
 														WHERE stock_quantity < ?`;
 
 				mysql.createConnection(connectionDetails())
@@ -98,13 +111,19 @@ exports.addToInventory = function(itemId, amount) {
 exports.addNewItem = function(productName, deptName, price, stockQty) {
 	return new Promise(
 			function(resolve, reject) {
-				const sqlQuery = `INSERT INTO products(product_name, department_name, price, stock_quantity)
-														VALUES(?,?,?,?)`;
+				const sqlQuery = `INSERT INTO products(product_name, department_name, department_id, price, stock_quantity)
+														SELECT ?,
+															?, 
+															department_id,
+															?, 
+															?
+														FROM departments
+														WHERE department_name = ?`;
 
 				mysql.createConnection(connectionDetails())
 					.then((conn) => {
 						// Execute query
-						const results = conn.query(sqlQuery, [productName, deptName, price, stockQty]);
+						const results = conn.query(sqlQuery, [productName, deptName, price, stockQty, deptName]);
 
 						conn.end();
 
@@ -203,10 +222,53 @@ exports.productSalesByDepartment = function() {
 														(sum(p.product_sales) - d.over_head_costs) total_profit
 												FROM products p,
 													departments d
-												WHERE p.department_name = d.department_name
+												WHERE p.department_id = d.department_id
 												GROUP BY d.department_id,
 													d.department_name,
 													d.over_head_costs`;
+
+			mysql.createConnection(connectionDetails())
+				.then((conn) => {
+					const result = conn.query(sqlQuery);
+
+					conn.end();
+
+					resolve(result);
+				}).catch((error) => {
+					if(error) {
+						reject(error);
+					}
+				});
+		}
+	)
+}
+
+exports.createDepartment = function(deptName, overHead) {
+	return new Promise(
+		function(resolve, reject) {
+			const sqlQuery = `INSERT INTO departments(department_name, over_head_costs)
+													VALUES(?,?)`;
+
+			mysql.createConnection(connectionDetails())
+				.then((conn) => {
+					const result = conn.query(sqlQuery,[deptName, overHead]);
+
+					conn.end();
+
+					resolve(result);
+				}).catch((error) => {
+					if(error) {
+						reject(error);
+					}
+				});
+		}
+	)
+}
+
+exports.getDepartmentNames = function() {
+	return new Promise(
+		function(resolve, reject) {
+			const sqlQuery = `SELECT department_name FROM departments`;
 
 			mysql.createConnection(connectionDetails())
 				.then((conn) => {

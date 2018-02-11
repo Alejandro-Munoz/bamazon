@@ -35,11 +35,18 @@ function promptUser() {
 		});
 
 		function displayAllProducts() {
-			databaseQueries.getAllProducts()
+			databaseQueries.getProducts("manager")
 				.then((results) => {
 					console.log("\n---- Current List of Items on Sale ----");
 
-					bamazonUtils.displayData(results);
+					if(results[0].length <= 0) {
+						console.log("There are currently 0 items for sale in the store.");
+					} else {
+						const colNames = ["Item Id", "Product Name", "Department Name", "Price", "Stock Qty"];
+						const colWidths = [10, 20, 20, 10, 15];
+
+						bamazonUtils.displayData(results, colNames, colWidths);
+					}
 				}).catch((error) => {
 					if(error) {
 						console.error(error);
@@ -52,7 +59,14 @@ function promptUser() {
 				.then((results) => {
 					console.log("\n---- Current List of Items With Low Inventory ----");
 
-					bamazonUtils.displayData(results);
+					if(results[0].length <= 0) {
+						console.log("There are currently 0 items for sale in the store.");
+					} else {
+						const colNames = ["Item Id", "Product Name", "Department Name", "Price", "Stock Qty"];
+						const colWidths = [10, 20, 20, 10, 15];
+
+						bamazonUtils.displayData(results, colNames, colWidths);
+					}
 				}).catch((error) => {
 					if(error) {
 						console.error(error);
@@ -111,52 +125,77 @@ function promptUser() {
 		}
 
 		function addNewItem() {
-			inquirer
-				.prompt([
-					{
-						type: "input",
-						name: "productName",
-						message: "Product name?"
-					},
-					{
-						type: "input",
-						name: "deptName",
-						message: "Department name?"
-					},
-					{
-						type: "input",
-						name: "price",
-						message: "Price?",
-						validate: function(input) {
-							if(isNaN(input) || input < 0) {
-								return "That is an invalid price.  Please enter a valid price value.";
-							}
+			// Get list of department names
+			let deparmentNames = [];
 
-							return true;
-						}
-					},
-					{
-						type: "input",
-						name: "quantity",
-						message: "Stock quantity (whole numbers only)?",
-						validate: function(input) {
-							if(isNaN(input) || input < 0 || Number.isInteger(parseInt(input)) === false) {
-								return "That is an invalid stock quantity.  Please enter a valid quantity value.";
-							}
-
-							return true;
-						}
+			databaseQueries.getDepartmentNames()
+				.then((results) => {
+					if(results[0].length <= 0) {
+						return false;
 					}
-					]).then((answers) => {
-						databaseQueries.addNewItem(answers.productName, answers.deptName, answers.price, answers.quantity)
-							.then((results) => {
-								console.log("Item successfully added.");
-							}).catch((error) => {
-								if(error) {
-									console.error(error);
+
+					for(let i=0; i<results[0].length; i++) {
+						deparmentNames.push(results[0][i].department_name);
+					}
+
+					return true;
+				}).then((results) => {
+					if(results === false) {
+						console.log("No deparments have been setup.  Unable to add new products to the store.");
+					} else {
+						inquirer
+							.prompt([
+								{
+									type: "input",
+									name: "productName",
+									message: "Product name?"
+								},
+								{
+									type: "list",
+									name: "deptName",
+									message: "Department name?",
+									choices: deparmentNames
+								},
+								{
+									type: "input",
+									name: "price",
+									message: "Price?",
+									validate: function(input) {
+										if(isNaN(input) || input < 0) {
+											return "That is an invalid price.  Please enter a valid price value.";
+										}
+
+										return true;
+									}
+								},
+								{
+									type: "input",
+									name: "quantity",
+									message: "Stock quantity (whole numbers only)?",
+									validate: function(input) {
+										if(isNaN(input) || input < 0 || Number.isInteger(parseInt(input)) === false) {
+											return "That is an invalid stock quantity.  Please enter a valid quantity value.";
+										}
+
+										return true;
+									}
 								}
+								]).then((answers) => {
+									databaseQueries.addNewItem(answers.productName, answers.deptName, answers.price, answers.quantity)
+										.then((results) => {
+											console.log("Item successfully added.");
+										}).catch((error) => {
+											if(error) {
+												console.error(error);
+											}
+										});
 							});
-				});
+						}
+					}).catch((error) => {
+						if(error) {
+							console.error(error);
+						}
+					});
 		}
 }
 

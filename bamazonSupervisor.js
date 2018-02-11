@@ -22,7 +22,7 @@ function promptUser() {
 					productSalesByDepartment();
 					break;
 				case "Create New Department":
-					console.log("coming soon");
+					newDepartment();
 					break;
 				default:
 					console.error("Encountered unhandled selection: " + answers.userAction);
@@ -32,15 +32,50 @@ function promptUser() {
 		function productSalesByDepartment() {
 			databaseQueries.productSalesByDepartment()
 				.then((results) => {
-					const displayColNames = ["Dept Id", "Dept Name", "Over Head Costs", "Product Sales", "Total Profit"];
+					if(results[0].length <= 0) {
+						console.log("There are currently 0 items for sale in the store.");
+					} else {
+						const displayColNames = ["Dept Id", "Dept Name", "Over Head Costs", "Product Sales", "Total Profit"];
+						const colWidths = [10, 20, 20, 15, 15];
 
-					const colWidths = [10, 20, 20, 15, 15];
-
-					bamazonUtils.displayDataV2(results, displayColNames, colWidths);
+						bamazonUtils.displayData(results, displayColNames, colWidths);
+					}
 				}).catch((error) => {
 					if(error) {
 						console.error(error);
 					}
+				});
+		}
+
+		function newDepartment() {
+			inquirer
+				.prompt([
+					{
+						type: "input",
+						name: "deptName",
+						message: "Depatment name?"
+					},
+					{
+						type: "input",
+						name: "overHead",
+						message: "Depatment over head costs?",
+						validate: function(input) {
+							if(isNaN(input) || input < 0) {
+								return "Please provide a valid over head cost value";
+							}
+
+							return true;
+						}
+					}
+				]).then((answers) => {
+						databaseQueries.createDepartment(answers.deptName, answers.overHead)
+							.then((results) => {
+								console.log("Deparment successfully added.");
+							}).catch((error) => {
+								if(error) {
+									console.error(error);
+								}
+							});
 				});
 		}
 }

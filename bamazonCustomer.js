@@ -14,16 +14,20 @@ function bamazonCustomer() {
 	Queries the products table and then will prompt the user whether they would like to make a purchase
 */
 function displayAllItems() {
-	databaseQueries.getAllProducts()
+	databaseQueries.getProducts("customer")
 		.then((results) => {
 			console.log("\n---- Current List of Items on Sale ----");
 
-			const colNames = ["Item Id", "Product Name", "Department Name", "Price"];
-			const colWidths = [10, 20, 20, 10];
+			if(results[0].length <= 0) {
+				console.log("There are currently 0 items for sale in the store.");
+			} else {
+				const colNames = ["Item Id", "Product Name", "Department Name", "Price"];
+				const colWidths = [10, 20, 20, 10];
 			
-			bamazonUtils.displayData(results, colNames, colWidths);
+				bamazonUtils.displayData(results, colNames, colWidths);
 
-			promptUserToBuy(results);
+				promptUserToBuy(results);
+			}	
 		}).catch((error) => {
 			if(error) {
 				console.error(error);
