@@ -33,7 +33,7 @@ When the Customer view is selected, you will be presented with a table of all th
 
 ![customer enter id](images/for_readme/customer_enterID.png)
 
-After entering a valid item ID, you will be presented with the amount to purchase.
+After entering a valid item ID, you will be asked to provide the amount to purchase.
 
 ![customer_enter_qty](images/for_readme/customer_validID.png)
 
