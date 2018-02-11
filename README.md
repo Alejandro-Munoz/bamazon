@@ -25,13 +25,13 @@ Then, to run the applicaton run:
 
 After execuring `node index`, you will be presented with a list of view options to choose from.
 
-![Image of index](images/for_readme/node_index.png)
+![index image](images/for_readme/node_index.png)
 
 ## Customer View
 
 When the Customer view is selected, you will be presented with a table of all the items currently for sale.
 
-(images/for_readme/customer_enterID.png)
+![customer enter id](images/for_readme/customer_enterID.png)
 
 ## Manager View
 
