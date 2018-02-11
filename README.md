@@ -55,4 +55,30 @@ If the store does not have enough quanity on hand, the order will not be process
 
 ## Manager View
 
+The Manager View provides you with the following choices.
+
+![manager choices](images/for_readme/manager_choices.png)
+
+### View Products for Sale
+
+Provides you with a table of the current items for sale in the store.
+
+![manager products for sale](images/for_readme/manager_viewProducts.png)
+
+### View Low Inventory
+
+Provides you with a table of the current items in the store with a quanity less than 5.
+
+![manager low inventory](images/for_readme/manager_lowInventory.png)
+
+### Add to Inventory
+
+Provides you with the ability to add inventory to a currently existing item ID.
+
+![manager add to inventory](images/for_readme/manager_addToInventoryItemId.png)
+
+You will then be prompted to add the amount of inventory to add.
+
+
+
 ## Supervisor View
