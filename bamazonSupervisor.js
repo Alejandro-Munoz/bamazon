@@ -53,12 +53,12 @@ function promptUser() {
 					{
 						type: "input",
 						name: "deptName",
-						message: "Depatment name?"
+						message: "Department name?"
 					},
 					{
 						type: "input",
 						name: "overHead",
-						message: "Depatment over head costs?",
+						message: "Department over head costs?",
 						validate: function(input) {
 							if(isNaN(input) || input < 0) {
 								return "Please provide a valid over head cost value";
@@ -70,7 +70,7 @@ function promptUser() {
 				]).then((answers) => {
 						databaseQueries.createDepartment(answers.deptName, answers.overHead)
 							.then((results) => {
-								console.log("Deparment successfully added.");
+								console.log("Department successfully added.");
 							}).catch((error) => {
 								if(error) {
 									console.error(error);
