@@ -9,7 +9,7 @@ The application provides 3 views:
 	* Manager
 	* Supervisor
 
-Refer to the [**Show Me**](https://github.com/xtiane/bamazon/blob/master/README.md#show-me) section below for examples on how to use each of the views.
+Refer to the [**Show Me**](#show-me) section below for examples on how to use each of the views.
 
 ## How do I use it?
 
