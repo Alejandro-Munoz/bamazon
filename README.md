@@ -24,7 +24,7 @@ Then, to run the applicaton run:
 ## Show Me
 
 ![Image of index]
-(images/node_index.png)
+(images/for_readme/node_index.png)
 
 
 ## Customer View
