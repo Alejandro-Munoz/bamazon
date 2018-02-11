@@ -23,8 +23,7 @@ Then, to run the applicaton run:
 
 ## Show Me
 
-![Image of index]
-(bamazon/images/for_readme/node_index.png)
+![Image of index](bamazon/images/for_readme/node_index.png)
 
 
 ## Customer View
