@@ -33,6 +33,14 @@ When the Customer view is selected, you will be presented with a table of all th
 
 ![customer enter id](images/for_readme/customer_enterID.png)
 
+After entering a valid item ID, you will be presented with the amount to purchase
+
+![customer_enter_qty](images/for_readme/customer_validID.png)
+
+If the store has enough inventory on hand to complete your order, you will be presented with an order summary
+
+![customer order summary](images/for_readme/customer_successfulOrder.png)
+
 ## Manager View
 
 ## Supervisor View
