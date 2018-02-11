@@ -79,6 +79,32 @@ Provides you with the ability to add inventory to a currently existing item ID.
 
 You will then be prompted to add the amount of inventory to add.
 
+![manager add to inventory](images/for_readme/manager_addToInventory.png)
 
+In the manager view, you will also be able to add a new products to the store.
+
+![manager add product](images/for_readme/manager_addNewProduct.png)
+
+### Invalid Input Handling
+
+In the ** Add to Inventory ** view, if an attempt is made to update an item ID which does not exists, you will be presented with an error.
+
+![add to inventory invalid id](images/for_readme/manager_addToInventoryError.png)
 
 ## Supervisor View
+
+The Supervisor view allows you the following options.
+
+![supervisor choices](images/for_readme/supervisor_choices.png)
+
+### View Product Sales by Department
+
+Provides you with a table of the total sales by available departments.
+
+![supervisor total sales](images/for_readme/supervisor_viewProductSales.png)
+
+### Create Department
+
+Allows you to create a new department.
+
+![supervisor create dept](images/for_readme/supervisor_createDepartment.png)
