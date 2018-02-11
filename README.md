@@ -5,18 +5,30 @@ A Node.js based terminal store front utilizing a MySQL database.
 
 The application provides 3 views:
 
-	* [Customer](#customer)
-	* [Manager](#manager)
-	* [Supervisor](#supervisor)
+	* Customer
+	* Manager
+	* Supervisor
 
 Refer to the [**Show Me**](#show-me) section below for examples on how to use each of the views.
 
 ## How do I use it?
 
+Clone this repository and then run:
+
+`npm install`
+
+Then, to run the applicaton run:
+
+`node index`
+
 ## Show Me
 
-## Customer
+![Image of index]
+(images/node_index.png)
 
-## Manager
 
-## Supervisor
+## Customer View
+
+## Manager View
+
+## Supervisor View
