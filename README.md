@@ -13,7 +13,6 @@ Refer to the [**Show Me**](#show-me) section below for examples on how to use ea
 
 ## How do I use it?
 
-
 ## Show Me
 
 ## Customer
